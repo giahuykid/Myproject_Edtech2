@@ -1,16 +1,17 @@
 package com.sixofrods.edtech.controller;
 
 import com.sixofrods.edtech.dto.QuizQuestionDTO;
-import com.sixofrods.edtech.entity.FlashcardGame;
+import com.sixofrods.edtech.entity.Mock;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RequestMapping("/api/flashcard-game")
-public interface FlashcardGameController {
+public interface MockController {
     @PostMapping("/create")
-    ResponseEntity<FlashcardGame> createFlashGame(
+    ResponseEntity<Mock> createFlashGame(
+            @RequestParam String nameMock,
             @RequestParam Long userId,
             @RequestParam Long languageId,
             @RequestParam int numberOfQuestions,
@@ -30,7 +31,7 @@ public interface FlashcardGameController {
     );
 
     @GetMapping("/{gameId}")
-    ResponseEntity<FlashcardGame> getGameById(
+    ResponseEntity<Mock> getGameById(
             @PathVariable Long gameId
     );
 
@@ -38,7 +39,7 @@ public interface FlashcardGameController {
     ResponseEntity<Void> deleteGame(@PathVariable Long gameId);
 
     @PatchMapping("/{gameId}")
-    ResponseEntity<FlashcardGame> updateFlashGame(
+    ResponseEntity<Mock> updateFlashGame(
             @PathVariable Long gameId,
             @RequestParam(required = false) Long languageId,
             @RequestParam(required = false) Integer numberOfQuestions,

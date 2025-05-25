@@ -1,30 +1,30 @@
 package com.sixofrods.edtech.controller;
 
 import com.sixofrods.edtech.dto.QuizQuestionDTO;
-import com.sixofrods.edtech.entity.FlashcardGame;
-import com.sixofrods.edtech.service.FlashcardGameService;
+import com.sixofrods.edtech.entity.Mock;
+import com.sixofrods.edtech.service.MockService;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
 
-public class FlashcardGameControllerIMPL implements FlashcardGameController {
+public class MockControllerIMPL implements MockController {
     @Autowired
-    private FlashcardGameService flashGameService;
+    private MockService flashGameService;
 
     @Override
-    public ResponseEntity<FlashcardGame> createFlashGame(
+    public ResponseEntity<Mock> createFlashGame(
+            String nameMock,
             Long userId,
             Long languageId,
             int numberOfQuestions,
             List<QuizQuestionDTO> questions) {
         try {
-            FlashcardGame game = flashGameService.createFlashGame(userId,languageId, numberOfQuestions, questions);
+            Mock game = flashGameService.createMock(nameMock,userId,languageId, numberOfQuestions, questions);
             return ResponseEntity.ok(game);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -55,9 +55,9 @@ public class FlashcardGameControllerIMPL implements FlashcardGameController {
     }
 
     @Override
-    public ResponseEntity<FlashcardGame> getGameById(Long gameId) {
+    public ResponseEntity<Mock> getGameById(Long gameId) {
         try {
-            FlashcardGame game = flashGameService.getGameById(gameId);
+            Mock game = flashGameService.getGameById(gameId);
             return ResponseEntity.ok(game);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -76,13 +76,13 @@ public class FlashcardGameControllerIMPL implements FlashcardGameController {
     }
 
     @Override
-    public ResponseEntity<FlashcardGame> updateFlashGame(
+    public ResponseEntity<Mock> updateFlashGame(
             Long gameId,
             Long languageId,
             Integer numberOfQuestions,
             List<QuizQuestionDTO> questions) {
         try {
-            FlashcardGame game = flashGameService.updateFlashGame(gameId, languageId, numberOfQuestions, questions);
+            Mock game = flashGameService.updateFlashGame(gameId, languageId, numberOfQuestions, questions);
             return ResponseEntity.ok(game);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();

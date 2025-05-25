@@ -25,6 +25,6 @@ public class Score {
 
     @ManyToOne
     @JoinColumn(name = "flashcard_game_id")
-    private FlashcardGame flashcardGame;
+    private Mock mock;
 
 }

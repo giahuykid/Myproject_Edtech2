@@ -3,7 +3,6 @@ package com.sixofrods.edtech.service;
 import com.sixofrods.edtech.dto.QuizAnswerDTO;
 import com.sixofrods.edtech.dto.QuizQuestionDTO;
 import com.sixofrods.edtech.entity.*;
-import com.sixofrods.edtech.entity.LanguageGame;
 import com.sixofrods.edtech.mapper.QuizMapper;
 import com.sixofrods.edtech.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class FlashcardGameServiceIMPL implements FlashcardGameService {
+public class MockServiceIMPL implements MockService {
     @Autowired
     private FlashcardGameRP flashcardGameRP;
     @Autowired
@@ -33,50 +32,24 @@ public class FlashcardGameServiceIMPL implements FlashcardGameService {
     private LanguageGameRP languageGameRP;
 
     @Override
-    public FlashcardGame createFlashGame(Long userId, Long languageId, int numberOfQuestions, List<QuizQuestionDTO> questions) {
+    public Mock createMock(String nameMock, Long userId, Long languageId, int numberOfQuestions, List<QuizQuestionDTO> questions) {
         User user = userRP.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Language language = languageRP.findById(languageId)
                 .orElseThrow(() -> new RuntimeException("Language not found"));
 
-        // Find or create LanguageGame for this language
-        LanguageGame languageGame = languageGameRP.findByLanguageId(languageId)
-                .orElseGet(() -> {
-                    LanguageGame newGame = LanguageGame.builder()
-                            .gameName(language.getLanguageName() + " Learning Games")
-                            .description("Games collection for " + language.getLanguageGames())
-                            .duration(LocalDateTime.now())
-                            .isActive("Y")
-                            .language(language)
-                            .build();
-                    return languageGameRP.save(newGame);
-                });
 
-        // Find or create GameCollection for FLASH_GAME type
-        GameColletion gameCollection = languageGame.getGameCollections().stream()
-                .filter(gc -> gc.getType() == GameType.FLASH_GAME)
-                .findFirst()
-                .orElseGet(() -> {
-                    GameColletion newCollection = GameColletion.builder()
-                            .type(GameType.FLASH_GAME)
-                            .createdAt(LocalDateTime.now())
-                            .createdBy(user.getFullName())
-                            .languageGame(languageGame)
-                            .user(user)
-                            .flashcardGames(new ArrayList<>()) // initialize list
-                            .build();
-                    return collectionRP.save(newCollection);
-                });
+
+
 
         // Create new FlashcardGame and set its GameCollection
-        FlashcardGame game = FlashcardGame.builder()
-                .type("FLASH")
+        Mock game = Mock.builder()
+                .nameMock(nameMock)
                 .numberOfQuestions(numberOfQuestions)
                 .createdAt(LocalDateTime.now())
                 .language(language)
                 .quizQuestions(new ArrayList<>())
                 .scores(new ArrayList<>())
-                .gameCollection(gameCollection) // link to collection
                 .build();
         game = flashcardGameRP.save(game);
 
@@ -90,25 +63,23 @@ public class FlashcardGameServiceIMPL implements FlashcardGameService {
         Score score = Score.builder()
                 .score(0)
                 .submittedAt(LocalDateTime.now())
-                .flashcardGame(game)
+                .mock(game)
                 .build();
         score = scoreRP.save(score);
         game.getScores().add(score);
 
-        // Update gameCollection to include this game
-        gameCollection.getFlashcardGames().add(game);
-        collectionRP.save(gameCollection);
+
 
         return flashcardGameRP.save(game);
     }
 
     @Override
     public boolean submitAnswer(Long gameId, Long questionId, Long answerId) {
-        FlashcardGame game = flashcardGameRP.getReferenceById(gameId);
+        Mock game = flashcardGameRP.getReferenceById(gameId);
         QuizQuestions question = quizQuestionsRP.getReferenceById(questionId);
         QuizAnswers answer = quizAnswersRP.getReferenceById(answerId);
 
-        if (!question.getFlashcardGame().getId().equals(gameId)) {
+        if (!question.getMock().getId().equals(gameId)) {
             throw new RuntimeException("Question does not belong to this game");
         }
 
@@ -119,7 +90,7 @@ public class FlashcardGameServiceIMPL implements FlashcardGameService {
                         Score newScore = new Score();
                         newScore.setScore(0);
                         newScore.setSubmittedAt(LocalDateTime.now());
-                        newScore.setFlashcardGame(game);
+                        newScore.setMock(game);
                         game.getScores().add(newScore);
                         return newScore;
                     });
@@ -133,7 +104,7 @@ public class FlashcardGameServiceIMPL implements FlashcardGameService {
 
     @Override
     public int getCurrentScore(Long gameId) {
-        FlashcardGame game = flashcardGameRP.getReferenceById(gameId);
+        Mock game = flashcardGameRP.getReferenceById(gameId);
         return game.getScores().stream()
                 .findFirst()
                 .map(Score::getScore)
@@ -141,13 +112,13 @@ public class FlashcardGameServiceIMPL implements FlashcardGameService {
     }
 
     @Override
-    public FlashcardGame getGameById(Long gameId) {
+    public Mock getGameById(Long gameId) {
         return flashcardGameRP.getReferenceById(gameId);
     }
 
     @Override
-    public FlashcardGame updateFlashGame(Long gameId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions) {
-        FlashcardGame existingGame = flashcardGameRP.findById(gameId)
+    public Mock updateFlashGame(Long gameId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions) {
+        Mock existingGame = flashcardGameRP.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
         if (languageId != null) {
@@ -176,15 +147,15 @@ public class FlashcardGameServiceIMPL implements FlashcardGameService {
 
     @Override
     public void deleteGame(Long gameId) {
-        FlashcardGame game = flashcardGameRP.findById(gameId)
+        Mock game = flashcardGameRP.findById(gameId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
         flashcardGameRP.delete(game);
     }
 
-    private QuizQuestions createQuizQuestion(QuizQuestionDTO questionDto, FlashcardGame game) {
+    private QuizQuestions createQuizQuestion(QuizQuestionDTO questionDto, Mock game) {
         QuizMapper mapper = new QuizMapper();
         QuizQuestions question = mapper.toQuestionEntity(questionDto);
-        question.setFlashcardGame(game);
+        question.setMock(game);
         question.setAnswers(new ArrayList<>());
         question = quizQuestionsRP.save(question);
 

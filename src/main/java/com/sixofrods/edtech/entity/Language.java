@@ -33,7 +33,7 @@ public class Language {
     @OneToMany(mappedBy = "language")
     private List<LanguageResource> resources = new ArrayList<>();
     @OneToMany(mappedBy = "language")
-    private List<FlashcardGame> flashcardGames = new ArrayList<>();
+    private List<Mock> mocks = new ArrayList<>();
     @ManyToMany(mappedBy = "languages")
     private Set<Scholarship> scholarships = new HashSet<>();
 

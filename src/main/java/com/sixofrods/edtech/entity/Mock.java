@@ -16,23 +16,20 @@ import java.util.List;
 @Table(name = "flash_card_game")
 @NoArgsConstructor
 @AllArgsConstructor
-public class FlashcardGame {
+public class Mock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type;
+    private String nameMock;
     private int numberOfQuestions;
     private LocalDateTime createdAt;
     private String createdBy;
     @ManyToOne
-    @JoinColumn(name = "game_collection_id")
-    private GameColletion gameCollection;
-    @ManyToOne
     @JoinColumn(name = "language_id", nullable = false)
     private Language language;
-    @OneToMany(mappedBy = "flashcardGame", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuizQuestions> quizQuestions = new ArrayList<>();
-    @OneToMany(mappedBy = "flashcardGame", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL)
     private List<Score> scores = new ArrayList<>();
 
 

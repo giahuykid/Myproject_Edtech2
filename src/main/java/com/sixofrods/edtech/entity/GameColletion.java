@@ -29,8 +29,7 @@ public class GameColletion {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "gameCollection")
-    private List<FlashcardGame> flashcardGames;
+
 
     @ManyToOne
     @JoinColumn(name = "language_game_id")
