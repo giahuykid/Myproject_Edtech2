@@ -48,6 +48,7 @@ public class MockServiceIMPL implements MockService {
                 .numberOfQuestions(numberOfQuestions)
                 .createdAt(LocalDateTime.now())
                 .language(language)
+                .user(user)
                 .quizQuestions(new ArrayList<>())
                 .scores(new ArrayList<>())
                 .build();

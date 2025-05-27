@@ -31,6 +31,9 @@ public class Mock {
     private List<QuizQuestions> quizQuestions = new ArrayList<>();
     @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL)
     private List<Score> scores = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 
 }

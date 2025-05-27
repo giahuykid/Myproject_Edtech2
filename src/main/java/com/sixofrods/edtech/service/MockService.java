@@ -17,4 +17,5 @@ public interface MockService {
     Mock updateFlashGame(Long gameId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions);
 
     void deleteGame(Long gameId);
+
 }

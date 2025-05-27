@@ -42,5 +42,10 @@ public class User {
     private List<WordCollection> wordCollections = new ArrayList<>();
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Score> scores = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Mock> mocks = new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FlashcardCollection> FlashcardCollection = new ArrayList<>();
+
 
 }

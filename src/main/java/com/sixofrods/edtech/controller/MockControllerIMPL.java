@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MockControllerIMPL implements MockController {
     @Autowired
-    private MockService flashGameService;
+    private MockService MockService;
 
     @Override
     public ResponseEntity<Mock> createFlashGame(
@@ -24,7 +24,7 @@ public class MockControllerIMPL implements MockController {
             int numberOfQuestions,
             List<QuizQuestionDTO> questions) {
         try {
-            Mock game = flashGameService.createMock(nameMock,userId,languageId, numberOfQuestions, questions);
+            Mock game = MockService.createMock(nameMock,userId,languageId, numberOfQuestions, questions);
             return ResponseEntity.ok(game);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -37,7 +37,7 @@ public class MockControllerIMPL implements MockController {
             Long questionId,
             Long answerId) {
         try {
-            boolean result = flashGameService.submitAnswer(gameId, questionId, answerId);
+            boolean result = MockService.submitAnswer(gameId, questionId, answerId);
             return ResponseEntity.ok(result);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -47,7 +47,7 @@ public class MockControllerIMPL implements MockController {
     @Override
     public ResponseEntity<Integer> getCurrentScore(Long gameId) {
         try {
-            int score = flashGameService.getCurrentScore(gameId);
+            int score = MockService.getCurrentScore(gameId);
             return ResponseEntity.ok(score);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -57,7 +57,7 @@ public class MockControllerIMPL implements MockController {
     @Override
     public ResponseEntity<Mock> getGameById(Long gameId) {
         try {
-            Mock game = flashGameService.getGameById(gameId);
+            Mock game = MockService.getGameById(gameId);
             return ResponseEntity.ok(game);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -68,7 +68,7 @@ public class MockControllerIMPL implements MockController {
 
     public ResponseEntity<Void> deleteGame(Long gameId) {
         try {
-            flashGameService.deleteGame(gameId);
+            MockService.deleteGame(gameId);
             return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
@@ -82,7 +82,7 @@ public class MockControllerIMPL implements MockController {
             Integer numberOfQuestions,
             List<QuizQuestionDTO> questions) {
         try {
-            Mock game = flashGameService.updateFlashGame(gameId, languageId, numberOfQuestions, questions);
+            Mock game = MockService.updateFlashGame(gameId, languageId, numberOfQuestions, questions);
             return ResponseEntity.ok(game);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
