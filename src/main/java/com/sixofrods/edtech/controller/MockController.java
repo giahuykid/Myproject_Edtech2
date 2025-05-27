@@ -30,15 +30,15 @@ public interface MockController {
             @PathVariable Long mockId
     );
 
-    @GetMapping("/{mockId}")
+    @GetMapping("getMock/{mockId}")
     ResponseEntity<Mock> getMockById(
             @PathVariable Long mockId
     );
 
-    @DeleteMapping("/{mockId}")
+    @DeleteMapping("/delete/{mockId}")
     ResponseEntity<Void> deleteMock(@PathVariable Long mockId);
 
-    @PatchMapping("/{mockId}")
+    @PatchMapping("/update/{mockId}")
     ResponseEntity<Mock> updateMock(
             @PathVariable Long mockId,
             @RequestParam(required = false) Long languageId,
