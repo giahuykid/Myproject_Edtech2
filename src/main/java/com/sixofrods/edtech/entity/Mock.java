@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Data
 @Builder
-@Table(name = "flash_card_game")
+@Table(name = "mock")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Mock {

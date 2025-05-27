@@ -1,8 +1,11 @@
 package com.sixofrods.edtech.controller;
 
 import com.sixofrods.edtech.entity.Flashcard;
+import com.sixofrods.edtech.entity.FlashcardCollection;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequestMapping("/api/flashcard")
 public interface FlashcardController {
@@ -29,6 +32,8 @@ public interface FlashcardController {
             @RequestParam String word,
             @RequestParam String meaning
     );
-
-
-}
+    @GetMapping("/collections")
+    public ResponseEntity<List<FlashcardCollection>> getAllFlashcardCollections();
+    @GetMapping("/{id}")
+    public ResponseEntity<Flashcard> getFlashcardById(@PathVariable Long id);
+    }

@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface FlashcardGameRP extends JpaRepository <Mock, Long> {
+public interface MockRP extends JpaRepository <Mock, Long> {
 
 }

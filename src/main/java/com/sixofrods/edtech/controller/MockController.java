@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/flashcard-game")
+@RequestMapping("/api/mock")
 public interface MockController {
     @PostMapping("/create")
-    ResponseEntity<Mock> createFlashGame(
+    ResponseEntity<Mock> createMock(
             @RequestParam String nameMock,
             @RequestParam Long userId,
             @RequestParam Long languageId,
@@ -18,29 +18,29 @@ public interface MockController {
             @RequestBody List<QuizQuestionDTO> questions
     );
 
-    @PostMapping("/{gameId}/submit")
+    @PostMapping("/{mockId}/submit")
     ResponseEntity<Boolean> submitAnswer(
-            @PathVariable Long gameId,
+            @PathVariable Long mockId,
             @RequestParam Long questionId,
             @RequestParam Long answerId
     );
 
-    @GetMapping("/{gameId}/score")
+    @GetMapping("/{mockId}/score")
     ResponseEntity<Integer> getCurrentScore(
-            @PathVariable Long gameId
+            @PathVariable Long mockId
     );
 
-    @GetMapping("/{gameId}")
-    ResponseEntity<Mock> getGameById(
-            @PathVariable Long gameId
+    @GetMapping("/{mockId}")
+    ResponseEntity<Mock> getMockById(
+            @PathVariable Long mockId
     );
 
-    @DeleteMapping("/{gameId}")
-    ResponseEntity<Void> deleteGame(@PathVariable Long gameId);
+    @DeleteMapping("/{mockId}")
+    ResponseEntity<Void> deleteMock(@PathVariable Long mockId);
 
-    @PatchMapping("/{gameId}")
-    ResponseEntity<Mock> updateFlashGame(
-            @PathVariable Long gameId,
+    @PatchMapping("/{mockId}")
+    ResponseEntity<Mock> updateMock(
+            @PathVariable Long mockId,
             @RequestParam(required = false) Long languageId,
             @RequestParam(required = false) Integer numberOfQuestions,
             @RequestBody(required = false) List<QuizQuestionDTO> questions

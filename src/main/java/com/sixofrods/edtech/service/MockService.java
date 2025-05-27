@@ -8,14 +8,14 @@ import java.util.List;
 public interface MockService {
     Mock createMock(String nameMock, Long userId, Long languageId, int numberOfQuestions, List<QuizQuestionDTO> questions);
 
-    boolean submitAnswer(Long gameId, Long questionId, Long answerId);
+    boolean submitAnswer(Long mockId, Long questionId, Long answerId);
 
-    int getCurrentScore(Long gameId);
+    int getCurrentScore(Long mockId);
 
-    Mock getGameById(Long gameId);
+    Mock getMockById(Long mockId);
 
-    Mock updateFlashGame(Long gameId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions);
+    Mock updateMock(Long mockId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions);
 
-    void deleteGame(Long gameId);
+    void deleteMock(Long mockId);
 
 }

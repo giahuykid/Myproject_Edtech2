@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class FlashcardControllerIMPL implements FlashcardController {
     @Autowired
@@ -51,6 +53,25 @@ public class FlashcardControllerIMPL implements FlashcardController {
         try {
             Flashcard updatedFlashcard = flashcardService.updateFlashcard(id, word, meaning);
             return ResponseEntity.ok(updatedFlashcard);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<List<FlashcardCollection>> getAllFlashcardCollections() {
+        List<FlashcardCollection> collections = flashcardService.getAllFlashcardCollections();
+        if (collections.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(collections);
+    }
+
+    @Override
+    public ResponseEntity<Flashcard> getFlashcardById(Long id) {
+        try {
+            Flashcard flashcard = flashcardService.getFlashcardById(id);
+            return ResponseEntity.ok(flashcard);
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

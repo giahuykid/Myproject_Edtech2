@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 public class MockServiceIMPL implements MockService {
     @Autowired
-    private FlashcardGameRP flashcardGameRP;
+    private MockRP mockRP;
     @Autowired
     private QuizQuestionsRP quizQuestionsRP;
     @Autowired
@@ -37,13 +37,8 @@ public class MockServiceIMPL implements MockService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Language language = languageRP.findById(languageId)
                 .orElseThrow(() -> new RuntimeException("Language not found"));
-
-
-
-
-
         // Create new FlashcardGame and set its GameCollection
-        Mock game = Mock.builder()
+        Mock mock = Mock.builder()
                 .nameMock(nameMock)
                 .numberOfQuestions(numberOfQuestions)
                 .createdAt(LocalDateTime.now())
@@ -52,35 +47,35 @@ public class MockServiceIMPL implements MockService {
                 .quizQuestions(new ArrayList<>())
                 .scores(new ArrayList<>())
                 .build();
-        game = flashcardGameRP.save(game);
+        mock = mockRP.save(mock);
 
         // Add questions and answers
         for (QuizQuestionDTO questionDto : questions) {
-            QuizQuestions question = createQuizQuestion(questionDto, game);
-            game.getQuizQuestions().add(question);
+            QuizQuestions question = createQuizQuestion(questionDto, mock);
+            mock.getQuizQuestions().add(question);
         }
 
         // Create initial score
         Score score = Score.builder()
                 .score(0)
                 .submittedAt(LocalDateTime.now())
-                .mock(game)
+                .mock(mock)
                 .build();
         score = scoreRP.save(score);
-        game.getScores().add(score);
+        mock.getScores().add(score);
 
 
 
-        return flashcardGameRP.save(game);
+        return mockRP.save(mock);
     }
 
     @Override
-    public boolean submitAnswer(Long gameId, Long questionId, Long answerId) {
-        Mock game = flashcardGameRP.getReferenceById(gameId);
+    public boolean submitAnswer(Long mockId, Long questionId, Long answerId) {
+        Mock game = mockRP.getReferenceById(mockId);
         QuizQuestions question = quizQuestionsRP.getReferenceById(questionId);
         QuizAnswers answer = quizAnswersRP.getReferenceById(answerId);
 
-        if (!question.getMock().getId().equals(gameId)) {
+        if (!question.getMock().getId().equals(mockId)) {
             throw new RuntimeException("Question does not belong to this game");
         }
 
@@ -104,8 +99,8 @@ public class MockServiceIMPL implements MockService {
     }
 
     @Override
-    public int getCurrentScore(Long gameId) {
-        Mock game = flashcardGameRP.getReferenceById(gameId);
+    public int getCurrentScore(Long mockId) {
+        Mock game = mockRP.getReferenceById(mockId);
         return game.getScores().stream()
                 .findFirst()
                 .map(Score::getScore)
@@ -113,13 +108,13 @@ public class MockServiceIMPL implements MockService {
     }
 
     @Override
-    public Mock getGameById(Long gameId) {
-        return flashcardGameRP.getReferenceById(gameId);
+    public Mock getMockById(Long mockId) {
+        return mockRP.findById(mockId).orElseThrow(() -> new RuntimeException("Mock not found"));
     }
 
     @Override
-    public Mock updateFlashGame(Long gameId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions) {
-        Mock existingGame = flashcardGameRP.findById(gameId)
+    public Mock updateMock(Long mockId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions) {
+        Mock existingGame = mockRP.findById(mockId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
 
         if (languageId != null) {
@@ -143,20 +138,20 @@ public class MockServiceIMPL implements MockService {
             }
         }
 
-        return flashcardGameRP.save(existingGame);
+        return mockRP.save(existingGame);
     }
 
     @Override
-    public void deleteGame(Long gameId) {
-        Mock game = flashcardGameRP.findById(gameId)
+    public void deleteMock(Long mockId) {
+        Mock mock = mockRP.findById(mockId)
                 .orElseThrow(() -> new RuntimeException("Game not found"));
-        flashcardGameRP.delete(game);
+        mockRP.delete(mock);
     }
 
-    private QuizQuestions createQuizQuestion(QuizQuestionDTO questionDto, Mock game) {
+    private QuizQuestions createQuizQuestion(QuizQuestionDTO questionDto, Mock mock) {
         QuizMapper mapper = new QuizMapper();
         QuizQuestions question = mapper.toQuestionEntity(questionDto);
-        question.setMock(game);
+        question.setMock(mock);
         question.setAnswers(new ArrayList<>());
         question = quizQuestionsRP.save(question);
 

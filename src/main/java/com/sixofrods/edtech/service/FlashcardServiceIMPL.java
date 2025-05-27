@@ -3,13 +3,14 @@ package com.sixofrods.edtech.service;
 import com.sixofrods.edtech.entity.Flashcard;
 import com.sixofrods.edtech.entity.FlashcardCollection;
 import com.sixofrods.edtech.entity.User;
-import com.sixofrods.edtech.repository.FlashCardCollectionRP;
+import com.sixofrods.edtech.repository.FlashcardCollectionRP;
 import com.sixofrods.edtech.repository.FlashcardRP;
 import com.sixofrods.edtech.repository.UserRP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class FlashcardServiceIMPL implements FlashcardService {
@@ -17,7 +18,7 @@ public class FlashcardServiceIMPL implements FlashcardService {
   @Autowired
     private FlashcardRP flashcardRepository;
   @Autowired
-    private FlashCardCollectionRP flashcardCollectionRepository;
+    private FlashcardCollectionRP flashcardCollectionRPRepository;
   @Autowired
   private UserRP userRepository;
 
@@ -30,14 +31,14 @@ public class FlashcardServiceIMPL implements FlashcardService {
                 .flashcards(new ArrayList<>())
                 .build();
 
-        return flashcardCollectionRepository.save(collection);
+        return flashcardCollectionRPRepository.save(collection);
 
 }
 
     @Override
     public Flashcard createFlashcard(String word, String meaning, Long collectionId) {
 // Verify collection exists
-        FlashcardCollection collection = flashcardCollectionRepository.findById(collectionId)
+        FlashcardCollection collection = flashcardCollectionRPRepository.findById(collectionId)
                 .orElseThrow(() -> new RuntimeException("Collection not found"));
 
         // Create flashcard
@@ -49,7 +50,7 @@ public class FlashcardServiceIMPL implements FlashcardService {
 
         // Increment numberOfFlashcards
         collection.setNumberOfFlashcards(collection.getNumberOfFlashcards() + 1);
-        flashcardCollectionRepository.save(collection);
+        flashcardCollectionRPRepository.save(collection);
 
         // Save and return flashcard
         return flashcardRepository.save(flashcard);
@@ -57,7 +58,8 @@ public class FlashcardServiceIMPL implements FlashcardService {
 
     @Override
     public Flashcard getFlashcardById(Long id) {
-        return null;
+        return flashcardRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Flashcard not found"));
     }
 
     @Override
@@ -79,16 +81,21 @@ public class FlashcardServiceIMPL implements FlashcardService {
         // Decrement numberOfFlashcards in collection
         FlashcardCollection collection = flashcard.getCollection();
         collection.setNumberOfFlashcards(collection.getNumberOfFlashcards() - 1);
-        flashcardCollectionRepository.save(collection);
+        flashcardCollectionRPRepository.save(collection);
 
         flashcardRepository.delete(flashcard);
     }
 
     @Override
     public void delteFlashcardCollection(Long id) {
-        FlashcardCollection collection = flashcardCollectionRepository.findById(id)
+        FlashcardCollection collection = flashcardCollectionRPRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Collection not found"));
-        flashcardCollectionRepository.delete(collection);
+        flashcardCollectionRPRepository.delete(collection);
+    }
+
+    @Override
+    public List<FlashcardCollection> getAllFlashcardCollections() {
+        return flashcardCollectionRPRepository.findAll();
     }
 
 }
