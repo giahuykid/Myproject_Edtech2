@@ -36,5 +36,7 @@ public class Language {
     private List<Mock> mocks = new ArrayList<>();
     @ManyToMany(mappedBy = "languages")
     private Set<Scholarship> scholarships = new HashSet<>();
+    @OneToMany(mappedBy = "language", cascade = CascadeType.PERSIST)
+    private List<FileEntity> files = new ArrayList<>();
 
 }
