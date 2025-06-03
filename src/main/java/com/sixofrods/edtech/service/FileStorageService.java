@@ -1,7 +1,6 @@
 package com.sixofrods.edtech.service;
 
 import com.sixofrods.edtech.dto.FileUploadResponse;
-import com.sixofrods.edtech.entity.FileEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -13,9 +12,9 @@ public interface FileStorageService {
 
     // Read
     byte[] readFile(String fileName) throws IOException;
-    List<FileEntity> getAllFiles();
-    List<FileEntity> getFilesByLanguage(String languageName);
-    FileEntity getFileByName(String fileName);
+    List<FileUploadResponse> getAllFiles();
+    List<FileUploadResponse> getFilesByLanguage(String languageName);
+    FileUploadResponse getFileByName(String fileName);
 
     // Update
     FileUploadResponse updateFile(String fileName, MultipartFile file, String uploadedBy, String languageName);

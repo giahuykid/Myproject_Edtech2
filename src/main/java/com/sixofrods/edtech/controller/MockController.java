@@ -1,7 +1,7 @@
 package com.sixofrods.edtech.controller;
 
+import com.sixofrods.edtech.dto.MockDTO;
 import com.sixofrods.edtech.dto.QuizQuestionDTO;
-import com.sixofrods.edtech.entity.Mock;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +10,7 @@ import java.util.List;
 @RequestMapping("/api/mock")
 public interface MockController {
     @PostMapping("/create")
-    ResponseEntity<Mock> createMock(
+    ResponseEntity<MockDTO> createMock(
             @RequestParam String nameMock,
             @RequestParam Long userId,
             @RequestParam Long languageId,
@@ -31,7 +31,7 @@ public interface MockController {
     );
 
     @GetMapping("getMock/{mockId}")
-    ResponseEntity<Mock> getMockById(
+    ResponseEntity<MockDTO> getMockById(
             @PathVariable Long mockId
     );
 
@@ -39,7 +39,7 @@ public interface MockController {
     ResponseEntity<Void> deleteMock(@PathVariable Long mockId);
 
     @PatchMapping("/update/{mockId}")
-    ResponseEntity<Mock> updateMock(
+    ResponseEntity<MockDTO> updateMock(
             @PathVariable Long mockId,
             @RequestParam(required = false) Long languageId,
             @RequestParam(required = false) Integer numberOfQuestions,

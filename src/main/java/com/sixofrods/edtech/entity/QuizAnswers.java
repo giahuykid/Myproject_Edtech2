@@ -1,5 +1,6 @@
 package com.sixofrods.edtech.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,9 +23,11 @@ public class QuizAnswers {
     private boolean isCorrect;
     private int point;
     @OneToMany(mappedBy = "quizAnswers")
+    @JsonIgnoreProperties("quizAnswers")
     private List<StudentAnswer> studentAnswers;
     @ManyToOne
     @JoinColumn(name = "question_id", nullable = false)
+    @JsonIgnoreProperties({"answers", "usages", "mock"})
     private QuizQuestions question;
 
 

@@ -15,5 +15,4 @@ public class QuizQuestionDTO {
     private Long id;
     private String question;
     private List<QuizAnswerDTO> answers;
-
 }

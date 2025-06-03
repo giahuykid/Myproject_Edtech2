@@ -14,6 +14,6 @@ import java.util.List;
 public class QuizAnswerDTO {
     private Long id;
     private String answer;
-    private boolean correct;
+    private boolean isCorrect;
     private int point;
 }

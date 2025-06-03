@@ -1,5 +1,6 @@
 package com.sixofrods.edtech.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,13 +27,17 @@ public class Mock {
     private String createdBy;
     @ManyToOne
     @JoinColumn(name = "language_id", nullable = false)
+    @JsonIgnoreProperties({"mocks", "Classes", "users", "languageGames", "classQuiz", "resources", "scholarships", "files"})
     private Language language;
     @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnoreProperties("mock")
     private List<QuizQuestions> quizQuestions = new ArrayList<>();
     @OneToMany(mappedBy = "mock", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("mock")
     private List<Score> scores = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"mocks", "enrollments", "languages", "studentAnswers", "gameCollections", "wordCollections", "scores", "FlashcardCollection"})
     private User user;
 
 

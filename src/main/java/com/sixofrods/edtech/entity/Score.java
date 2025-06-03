@@ -1,5 +1,6 @@
 package com.sixofrods.edtech.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Builder
@@ -19,12 +21,14 @@ public class Score {
     private Long id;
     private int score;
     private LocalDateTime submittedAt;
+    
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnoreProperties({"scores", "mocks", "enrollments", "languages", "studentAnswers", "gameCollections", "wordCollections", "FlashcardCollection"})
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "flashcard_game_id")
+    @JsonIgnoreProperties({"scores", "quizQuestions", "language", "user"})
     private Mock mock;
-
 }

@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class FileStorageServiceImpl implements FileStorageService {
@@ -33,8 +34,18 @@ public class FileStorageServiceImpl implements FileStorageService {
     private String uploadDir;
 
     private final List<String> ALLOWED_EXTENSIONS = Arrays.asList(
-            "pdf", "doc", "docx", "mp3" // Added mp3 format
+            "pdf", "doc", "docx", "mp3"
     );
+
+    private FileUploadResponse convertToFileUploadResponse(FileEntity entity) {
+        return FileUploadResponse.builder()
+                .fileName(entity.getFileName())
+                .fileType(entity.getFileType())
+                .size(entity.getSize())
+                .uploadStatus("success")
+                .message("File found")
+                .build();
+    }
 
     private Language getOrCreateLanguage(String languageName) {
         return languageRepository.findByLanguageName(languageName)
@@ -65,22 +76,18 @@ public class FileStorageServiceImpl implements FileStorageService {
                         .build();
             }
 
-            // Create upload directory if it doesn't exist
             Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
 
-            // Generate unique filename to prevent overwrites
             String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
             Path targetLocation = uploadPath.resolve(uniqueFileName);
 
-            // Copy file to target location
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
             Language language = getOrCreateLanguage(languageName);
 
-            // Save file metadata to database
             FileEntity fileEntity = FileEntity.builder()
                     .fileName(fileName)
                     .fileType(file.getContentType())
@@ -108,39 +115,39 @@ public class FileStorageServiceImpl implements FileStorageService {
 
     @Override
     public byte[] readFile(String fileName) throws IOException {
-        // Decode URL-encoded filename
         String decodedFileName = java.net.URLDecoder.decode(fileName, java.nio.charset.StandardCharsets.UTF_8);
-        FileEntity fileEntity = getFileByName(decodedFileName);
+        FileEntity fileEntity = fileRepository.findByFileName(decodedFileName)
+                .orElseThrow(() -> new RuntimeException("File not found: " + decodedFileName));
         return Files.readAllBytes(Paths.get(fileEntity.getFilePath()));
     }
 
     @Override
-    public List<FileEntity> getAllFiles() {
-        return fileRepository.findAll();
+    public List<FileUploadResponse> getAllFiles() {
+        return fileRepository.findAll().stream()
+                .map(this::convertToFileUploadResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<FileEntity> getFilesByLanguage(String languageName) {
-        return fileRepository.findByLanguage_LanguageName(languageName);
+    public List<FileUploadResponse> getFilesByLanguage(String languageName) {
+        return fileRepository.findByLanguage_LanguageName(languageName).stream()
+                .map(this::convertToFileUploadResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public FileEntity getFileByName(String fileName) {
-        // Decode URL-encoded filename and clean it
+    public FileUploadResponse getFileByName(String fileName) {
         String decodedFileName = java.net.URLDecoder.decode(fileName, java.nio.charset.StandardCharsets.UTF_8);
         String cleanFileName = StringUtils.cleanPath(decodedFileName.trim());
-        System.out.println("Searching for file with name: '" + cleanFileName + "'");
         
-        Optional<FileEntity> fileEntity = fileRepository.findByFileName(cleanFileName);
-        System.out.println("File found in database: " + fileEntity.isPresent());
+        FileEntity fileEntity = fileRepository.findByFileName(cleanFileName)
+                .orElseThrow(() -> new RuntimeException("File not found: " + cleanFileName));
         
-        return fileEntity.orElseThrow(() -> 
-            new RuntimeException("File not found: " + cleanFileName + " (Original filename: " + fileName + ")"));
+        return convertToFileUploadResponse(fileEntity);
     }
 
     @Override
     public FileUploadResponse updateFile(String fileName, MultipartFile file, String uploadedBy, String languageName) {
-        // Delete existing file from filesystem
         FileEntity existingFile = fileRepository.findByFileName(fileName)
                 .orElseThrow(() -> new RuntimeException("File not found: " + fileName));
         
@@ -150,7 +157,6 @@ public class FileStorageServiceImpl implements FileStorageService {
             throw new RuntimeException("Could not delete existing file: " + fileName, e);
         }
 
-        // Store new file
         return storeFile(file, uploadedBy, languageName);
     }
 
@@ -160,10 +166,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             FileEntity fileEntity = fileRepository.findByFileName(fileName)
                     .orElseThrow(() -> new RuntimeException("File not found: " + fileName));
 
-            // Delete file from filesystem
             Files.deleteIfExists(Paths.get(fileEntity.getFilePath()));
-
-            // Delete metadata from database
             fileRepository.delete(fileEntity);
             return true;
         } catch (Exception ex) {
