@@ -14,4 +14,4 @@ public interface FlashcardService {
     public void delteFlashcardCollection(Long id);
     public List<FlashcardCollection> getAllFlashcardCollections();
     public FlashcardCollection getFlashcardCollectionById(Long id);
-}
+    }

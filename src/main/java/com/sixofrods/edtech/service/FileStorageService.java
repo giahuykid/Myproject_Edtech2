@@ -11,16 +11,17 @@ public interface FileStorageService {
     FileUploadResponse storeFile(MultipartFile file, String uploadedBy, String languageName);
 
     // Read
-    byte[] readFile(String fileName) throws IOException;
+    byte[] readFileById(Long id) throws IOException;
     List<FileUploadResponse> getAllFiles();
     List<FileUploadResponse> getFilesByLanguage(String languageName);
+    FileUploadResponse getFileById(Long id);
     FileUploadResponse getFileByName(String fileName);
 
     // Update
-    FileUploadResponse updateFile(String fileName, MultipartFile file, String uploadedBy, String languageName);
+    FileUploadResponse updateFile(Long id, MultipartFile file, String uploadedBy, String languageName);
 
     // Delete
-    boolean deleteFile(String fileName);
+    boolean deleteFile(Long id);
 
     // Utility
     boolean isValidFileType(String fileName);

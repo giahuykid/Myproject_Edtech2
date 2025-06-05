@@ -34,14 +34,18 @@ public class FileStorageServiceImpl implements FileStorageService {
     private String uploadDir;
 
     private final List<String> ALLOWED_EXTENSIONS = Arrays.asList(
-            "pdf", "doc", "docx", "mp3"
+            "pdf", "doc", "docx", "mp3", "txt", "csv", "xlsx"
     );
 
     private FileUploadResponse convertToFileUploadResponse(FileEntity entity) {
         return FileUploadResponse.builder()
+                .id(entity.getId())
                 .fileName(entity.getFileName())
                 .fileType(entity.getFileType())
                 .size(entity.getSize())
+                .language(entity.getLanguage().getLanguageName())
+                .uploadedBy(entity.getUploadedBy())
+                .uploadDate(entity.getUploadDate().toString())
                 .uploadStatus("success")
                 .message("File found")
                 .build();
@@ -72,7 +76,7 @@ public class FileStorageServiceImpl implements FileStorageService {
                         .fileType(file.getContentType())
                         .size(file.getSize())
                         .uploadStatus("failed")
-                        .message("Invalid file type. Only PDF, Word documents, and MP3 audio files are allowed.")
+                        .message("Invalid file type. Only PDF, Word documents, MP3 audio files, text files, CSV, and Excel files are allowed.")
                         .build();
             }
 
@@ -98,15 +102,9 @@ public class FileStorageServiceImpl implements FileStorageService {
                     .language(language)
                     .build();
 
-            fileRepository.save(fileEntity);
+            fileEntity = fileRepository.save(fileEntity);
 
-            return FileUploadResponse.builder()
-                    .fileName(fileName)
-                    .fileType(file.getContentType())
-                    .size(file.getSize())
-                    .uploadStatus("success")
-                    .message("File uploaded successfully")
-                    .build();
+            return convertToFileUploadResponse(fileEntity);
 
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
@@ -114,10 +112,9 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public byte[] readFile(String fileName) throws IOException {
-        String decodedFileName = java.net.URLDecoder.decode(fileName, java.nio.charset.StandardCharsets.UTF_8);
-        FileEntity fileEntity = fileRepository.findByFileName(decodedFileName)
-                .orElseThrow(() -> new RuntimeException("File not found: " + decodedFileName));
+    public byte[] readFileById(Long id) throws IOException {
+        FileEntity fileEntity = fileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("File not found with id: " + id));
         return Files.readAllBytes(Paths.get(fileEntity.getFilePath()));
     }
 
@@ -136,6 +133,13 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
+    public FileUploadResponse getFileById(Long id) {
+        FileEntity fileEntity = fileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("File not found with id: " + id));
+        return convertToFileUploadResponse(fileEntity);
+    }
+
+    @Override
     public FileUploadResponse getFileByName(String fileName) {
         String decodedFileName = java.net.URLDecoder.decode(fileName, java.nio.charset.StandardCharsets.UTF_8);
         String cleanFileName = StringUtils.cleanPath(decodedFileName.trim());
@@ -147,30 +151,31 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public FileUploadResponse updateFile(String fileName, MultipartFile file, String uploadedBy, String languageName) {
-        FileEntity existingFile = fileRepository.findByFileName(fileName)
-                .orElseThrow(() -> new RuntimeException("File not found: " + fileName));
+    public FileUploadResponse updateFile(Long id, MultipartFile file, String uploadedBy, String languageName) {
+        FileEntity existingFile = fileRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("File not found with id: " + id));
         
         try {
             Files.deleteIfExists(Paths.get(existingFile.getFilePath()));
+            fileRepository.delete(existingFile);
         } catch (IOException e) {
-            throw new RuntimeException("Could not delete existing file: " + fileName, e);
+            throw new RuntimeException("Could not delete existing file with id: " + id, e);
         }
 
         return storeFile(file, uploadedBy, languageName);
     }
 
     @Override
-    public boolean deleteFile(String fileName) {
+    public boolean deleteFile(Long id) {
         try {
-            FileEntity fileEntity = fileRepository.findByFileName(fileName)
-                    .orElseThrow(() -> new RuntimeException("File not found: " + fileName));
+            FileEntity fileEntity = fileRepository.findById(id)
+                    .orElseThrow(() -> new RuntimeException("File not found with id: " + id));
 
             Files.deleteIfExists(Paths.get(fileEntity.getFilePath()));
             fileRepository.delete(fileEntity);
             return true;
         } catch (Exception ex) {
-            throw new RuntimeException("Could not delete file: " + fileName, ex);
+            throw new RuntimeException("Could not delete file with id: " + id, ex);
         }
     }
 

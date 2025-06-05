@@ -18,32 +18,33 @@ public interface FileUploadController {
             @RequestParam(defaultValue = "system") String uploadedBy,
             @RequestParam(required = true) String language);
 
-    // Read - Get list of all files
-    @GetMapping("/list")
+    // Read - Get list of all files (legacy endpoint)
+    @GetMapping
     ResponseEntity<List<FileUploadResponse>> getAllFiles(
             @RequestParam(required = false) String language);
 
+    // Read - Get list of all files (new endpoint)
+    @GetMapping("/all")
+    ResponseEntity<List<FileUploadResponse>> getAllFilesAlternative(
+            @RequestParam(required = false) String language);
+
     // Read - Get file metadata
-    @GetMapping("/info/{fileName}")
-    ResponseEntity<FileUploadResponse> getFileInfo(@PathVariable String fileName);
+    @GetMapping("/{id}/info")
+    ResponseEntity<FileUploadResponse> getFileInfo(@PathVariable Long id);
 
     // Read - View file directly in browser
-    @GetMapping("/view/{fileName}")
-    ResponseEntity<Resource> viewFile(@PathVariable String fileName);
-
-    // Read - Download file as attachment
-    @GetMapping("/download/{fileName}")
-    ResponseEntity<Resource> downloadFile(@PathVariable String fileName);
+    @GetMapping("/{id}/content")
+    ResponseEntity<Resource> viewFile(@PathVariable Long id);
 
     // Update - Update an existing file
-    @PutMapping("/{fileName}")
+    @PutMapping("/{id}")
     ResponseEntity<FileUploadResponse> updateFile(
-            @PathVariable String fileName,
+            @PathVariable Long id,
             @RequestParam("file") MultipartFile file,
             @RequestParam(defaultValue = "system") String uploadedBy,
             @RequestParam(required = true) String language);
 
     // Delete - Delete a file
-    @DeleteMapping("/{fileName}")
-    ResponseEntity<Map<String, String>> deleteFile(@PathVariable String fileName);
+    @DeleteMapping("/{id}")
+    ResponseEntity<Map<String, String>> deleteFile(@PathVariable Long id);
 }
