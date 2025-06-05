@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class FlashcardControllerIMPL implements FlashcardController {
     @Autowired
     private FlashcardService flashcardService;
@@ -82,6 +81,16 @@ public class FlashcardControllerIMPL implements FlashcardController {
         try {
             Flashcard flashcard = flashcardService.getFlashcardById(id);
             return ResponseEntity.ok(flashcardMapper.toDTO(flashcard));
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @Override
+    public ResponseEntity<FlashcardCollectionDTO> getFlashcardCollection(Long id) {
+        try {
+            FlashcardCollection collection = flashcardService.getFlashcardCollectionById(id);
+            return ResponseEntity.ok(flashcardMapper.toDTO(collection));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

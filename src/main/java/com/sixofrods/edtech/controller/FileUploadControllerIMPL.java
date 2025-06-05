@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.ByteArrayResource;
@@ -17,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+
+
 public class FileUploadControllerIMPL implements FileUploadController {
     @Autowired
     private FileStorageService fileStorageService;

@@ -98,6 +98,12 @@ public class FlashcardServiceIMPL implements FlashcardService {
         return flashcardCollectionRPRepository.findAll();
     }
 
+    @Override
+    public FlashcardCollection getFlashcardCollectionById(Long id) {
+        return flashcardCollectionRPRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Collection not found with id: " + id));
+    }
+
 }
 
 

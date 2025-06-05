@@ -36,4 +36,7 @@ public interface FlashcardController {
     public ResponseEntity<List<FlashcardCollectionDTO>> getAllFlashcardCollections();
     @GetMapping("/{id}")
     public ResponseEntity<FlashcardDTO> getFlashcardById(@PathVariable Long id);
-    }
+
+    @GetMapping("/getflashcardcollection/{id}")
+    public ResponseEntity<FlashcardCollectionDTO> getFlashcardCollection(@PathVariable Long id);
+}
