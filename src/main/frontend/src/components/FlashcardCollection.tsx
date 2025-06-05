@@ -22,7 +22,8 @@ import {
   Flashcard,
   getFlashcardCollection,
   addFlashcard,
-  deleteFlashcard as deleteFlashcardService
+  deleteFlashcard as deleteFlashcardService,
+  updateFlashcard
 } from '../services/flashcardService';
 import EditFlashcard from './EditFlashcard';
 
@@ -96,8 +97,15 @@ const FlashcardCollection: React.FC = () => {
     setEditingFlashcard(flashcard);
   };
 
-  const handleUpdateFlashcard = (updatedFlashcard: Flashcard) => {
-    fetchCollection();
+  const handleUpdateFlashcard = async (updatedFlashcard: Flashcard) => {
+    try {
+      await updateFlashcard(updatedFlashcard.id, updatedFlashcard.word, updatedFlashcard.meaning);
+      setError(null);
+      fetchCollection();
+    } catch (err: any) {
+      setError(err.message || 'Failed to update flashcard');
+      console.error('Error updating flashcard:', err);
+    }
   };
 
   if (isLoading) {
@@ -253,7 +261,7 @@ const FlashcardCollection: React.FC = () => {
           open={true}
           onClose={() => setEditingFlashcard(null)}
           flashcard={editingFlashcard}
-          collectionId={Number(id)}
+          collectionId={parseInt(id!)}
           onUpdate={handleUpdateFlashcard}
         />
       )}

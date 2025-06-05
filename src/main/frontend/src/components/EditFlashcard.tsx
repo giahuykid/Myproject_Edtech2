@@ -6,7 +6,8 @@ import {
   DialogActions,
   TextField,
   Button,
-  Box
+  Alert,
+  CircularProgress
 } from '@mui/material';
 import { Flashcard, updateFlashcard } from '../services/flashcardService';
 
@@ -22,7 +23,6 @@ const EditFlashcard: React.FC<EditFlashcardProps> = ({
   open,
   onClose,
   flashcard,
-  collectionId,
   onUpdate
 }) => {
   const [word, setWord] = useState(flashcard.word);
@@ -32,21 +32,19 @@ const EditFlashcard: React.FC<EditFlashcardProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
     setIsSubmitting(true);
+    setError(null);
 
     try {
       const updatedFlashcard = await updateFlashcard(
-        collectionId,
         flashcard.id,
         word,
         meaning
       );
       onUpdate(updatedFlashcard);
       onClose();
-    } catch (err) {
-      setError('Failed to update flashcard. Please try again.');
-      console.error('Error updating flashcard:', err);
+    } catch (err: any) {
+      setError(err.message || 'Failed to update flashcard');
     } finally {
       setIsSubmitting(false);
     }
@@ -54,32 +52,34 @@ const EditFlashcard: React.FC<EditFlashcardProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Edit Flashcard</DialogTitle>
       <form onSubmit={handleSubmit}>
+        <DialogTitle>Edit Flashcard</DialogTitle>
         <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <TextField
-              label="Word"
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-              fullWidth
-              required
-              error={error !== null}
-              disabled={isSubmitting}
-            />
-            <TextField
-              label="Meaning"
-              value={meaning}
-              onChange={(e) => setMeaning(e.target.value)}
-              fullWidth
-              required
-              multiline
-              rows={3}
-              error={error !== null}
-              disabled={isSubmitting}
-              helperText={error}
-            />
-          </Box>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+          <TextField
+            label="Word"
+            value={word}
+            onChange={(e) => setWord(e.target.value)}
+            fullWidth
+            required
+            margin="normal"
+            disabled={isSubmitting}
+          />
+          <TextField
+            label="Meaning"
+            value={meaning}
+            onChange={(e) => setMeaning(e.target.value)}
+            fullWidth
+            required
+            margin="normal"
+            multiline
+            rows={3}
+            disabled={isSubmitting}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} disabled={isSubmitting}>
@@ -89,9 +89,9 @@ const EditFlashcard: React.FC<EditFlashcardProps> = ({
             type="submit"
             variant="contained"
             color="primary"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !word.trim() || !meaning.trim()}
           >
-            Update
+            {isSubmitting ? <CircularProgress size={24} /> : 'Save Changes'}
           </Button>
         </DialogActions>
       </form>

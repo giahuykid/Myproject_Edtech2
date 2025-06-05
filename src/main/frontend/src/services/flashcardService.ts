@@ -50,7 +50,7 @@ export const addFlashcard = async (collectionId: number, word: string, meaning: 
   return response.data;
 };
 
-export const updateFlashcard = async (collectionId: number, flashcardId: number, word: string, meaning: string): Promise<Flashcard> => {
+export const updateFlashcard = async (flashcardId: number, word: string, meaning: string): Promise<Flashcard> => {
   const params = new URLSearchParams();
   params.append('word', word);
   params.append('meaning', meaning);
