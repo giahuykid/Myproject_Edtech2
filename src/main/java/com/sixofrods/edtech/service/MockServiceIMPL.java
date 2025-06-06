@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MockServiceIMPL implements MockService {
@@ -171,5 +172,23 @@ public class MockServiceIMPL implements MockService {
         }
 
         return question;
+    }
+    @Override
+    public List<MockDTO> getAllMocks(Long userId, Long languageId) {
+        List<Mock> mocks;
+
+        if (userId != null && languageId != null) {
+            mocks = mockRP.findByUserIdAndLanguageId(userId, languageId);
+        } else if (userId != null) {
+            mocks = mockRP.findByUserId(userId);
+        } else if (languageId != null) {
+            mocks = mockRP.findByLanguageId(languageId);
+        } else {
+            mocks = mockRP.findAll();
+        }
+
+        return mocks.stream()
+                .map(mockMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }

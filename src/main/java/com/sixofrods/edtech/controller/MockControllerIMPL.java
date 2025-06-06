@@ -92,4 +92,13 @@ public class MockControllerIMPL implements MockController {
     public class QuizQuestionRequest {
         private List<QuizQuestionDTO> questions;
     }
+    @Override
+    public ResponseEntity<List<MockDTO>> getAllMocks(Long userId, Long languageId) {
+        try {
+            List<MockDTO> mocks = mockService.getAllMocks(userId, languageId);
+            return ResponseEntity.ok(mocks);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
 }

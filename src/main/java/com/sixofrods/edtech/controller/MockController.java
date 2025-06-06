@@ -45,4 +45,9 @@ public interface MockController {
             @RequestParam(required = false) Integer numberOfQuestions,
             @RequestBody(required = false) List<QuizQuestionDTO> questions
     );
+    @GetMapping("/all")
+    ResponseEntity<List<MockDTO>> getAllMocks(
+        @RequestParam(required = false) Long userId,
+        @RequestParam(required = false) Long languageId
+    );
 }

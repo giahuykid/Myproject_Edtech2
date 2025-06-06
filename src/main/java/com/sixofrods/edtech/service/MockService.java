@@ -17,5 +17,5 @@ public interface MockService {
     MockDTO updateMock(Long mockId, Long languageId, Integer numberOfQuestions, List<QuizQuestionDTO> questions);
 
     void deleteMock(Long mockId);
-
+    List<MockDTO> getAllMocks(Long userId, Long languageId);
 }

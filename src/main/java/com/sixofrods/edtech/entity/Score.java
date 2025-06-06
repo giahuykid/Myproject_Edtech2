@@ -24,11 +24,9 @@ public class Score {
     
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnoreProperties({"scores", "mocks", "enrollments", "languages", "studentAnswers", "gameCollections", "wordCollections", "FlashcardCollection"})
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "flashcard_game_id")
-    @JsonIgnoreProperties({"scores", "quizQuestions", "language", "user"})
     private Mock mock;
 }
