@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -46,3 +47,7 @@ You can learn more in the [Create React App documentation](https://facebook.gith
 To learn React, check out the [React documentation](https://reactjs.org/).
 # Myproject_Edtech
 # Myproject_Edtech
+=======
+# edtech-be
+# Myproject_Edtech2
+>>>>>>> f699898c8ff03589e52d9446c4a7763ff933d49d
