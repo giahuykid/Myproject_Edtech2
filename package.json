@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
@@ -57,9 +56,5 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.4",
     "tailwindcss": "^4.1.8"
-=======
-  "dependencies": {
-    "@mui/icons-material": "^7.1.1"
->>>>>>> f699898c8ff03589e52d9446c4a7763ff933d49d
   }
 }
