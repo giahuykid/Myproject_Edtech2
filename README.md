@@ -1,53 +1,118 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+# EdTech Learning Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A full-stack educational technology platform built with React TypeScript frontend and Spring Boot backend.
+
+## Project Structure
+
+- **Frontend**: React TypeScript with Material-UI
+- **Backend**: Spring Boot (Java 21) with SQL Server database
+- **Deployment**: Docker containers
+
+## Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- Java 21
+- Maven
+
+## Environment Configuration
+
+The project uses environment variables for different deployment environments:
+
+### Frontend Environment Files
+
+- `.env.local` - Local development environment
+- `.env.production` - Production environment
+
+**Content of `.env.local`:**
+```
+REACT_APP_API_BASE_URL=http://localhost:8080
+```
+
+**Content of `.env.production`:**
+```
+REACT_APP_API_BASE_URL=http://20.89.64.149:8080
+```
+
+## Getting Started
+
+### Frontend Development
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+2. **Run in development mode:**
+   ```bash
+   npm start
+   ```
+   - Opens [http://localhost:3000](http://localhost:3000) in your browser
+   - Hot reload enabled - page reloads automatically when you make changes
+   - API calls point to `http://localhost:8080`
+
+### Frontend Production Build (Local Testing)
+
+1. **Create production environment file** (if not exists):
+   ```bash
+   echo "REACT_APP_API_BASE_URL=http://20.89.64.149:8080" > .env.production
+   ```
+
+2. **Build for production:**
+   ```bash
+   REACT_APP_API_BASE_URL=http://20.89.64.149:8080 npm run build
+   ```
+
+3. **Serve the production build locally:**
+   ```bash
+   npx serve -s build -l 3000
+   ```
+   - Production build served at [http://localhost:3000](http://localhost:3000)
+   - API calls point to production server `http://20.89.64.149:8080`
+   - Optimized and minified for best performance
+
+### Backend (Spring Boot)
+
+1. **Run the backend:**
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+   - Backend runs on [http://localhost:8080](http://localhost:8080)
 
 ## Available Scripts
 
-In the project directory, you can run:
+### Frontend Scripts
 
-### `npm start`
+| Command | Description |
+|---------|-------------|
+| `npm start` | Development server with hot reload |
+| `npm test` | Run test runner in interactive mode |
+| `npm run build` | Create production build |
+| `npm run eject` | Eject from Create React App (one-way operation) |
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Production Deployment Scripts
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+| Environment | Build Command | Serve Command |
+|-------------|---------------|---------------|
+| **Development** | `npm start` | - |
+| **Production** | `REACT_APP_API_BASE_URL=http://20.89.64.149:8080 npm run build` | `npx serve -s build -l 3000` |
 
-### `npm test`
+## Docker Support
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The project includes Docker configuration for containerized deployment:
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```bash
+docker-compose up
+```
 
 ## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started)
+- [React documentation](https://reactjs.org/)
+- [Spring Boot documentation](https://spring.io/projects/spring-boot)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-# Myproject_Edtech
-# Myproject_Edtech
-=======
-# edtech-be
-# Myproject_Edtech2
->>>>>>> f699898c8ff03589e52d9446c4a7763ff933d49d
+## Notes
+
+- Make sure your backend is running on port 8080 for local development
+- For production builds, ensure the production API server is accessible
+- Environment variables are embedded at build time, so rebuild when changing them
