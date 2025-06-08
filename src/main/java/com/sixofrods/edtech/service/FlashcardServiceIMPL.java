@@ -37,18 +37,15 @@ public class FlashcardServiceIMPL implements FlashcardService {
 
     @Override
     public Flashcard createFlashcard(String word, String meaning, Long collectionId) {
-// Verify collection exists
         FlashcardCollection collection = flashcardCollectionRPRepository.findById(collectionId)
                 .orElseThrow(() -> new RuntimeException("Collection not found"));
 
-        // Create flashcard
         Flashcard flashcard = Flashcard.builder()
                 .word(word)
                 .meaning(meaning)
                 .collection(collection)
                 .build();
 
-        // Increment numberOfFlashcards
         collection.setNumberOfFlashcards(collection.getNumberOfFlashcards() + 1);
         flashcardCollectionRPRepository.save(collection);
 
@@ -78,7 +75,6 @@ public class FlashcardServiceIMPL implements FlashcardService {
         Flashcard flashcard = flashcardRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Flashcard not found"));
 
-        // Decrement numberOfFlashcards in collection
         FlashcardCollection collection = flashcard.getCollection();
         collection.setNumberOfFlashcards(collection.getNumberOfFlashcards() - 1);
         flashcardCollectionRPRepository.save(collection);
